@@ -8,15 +8,26 @@ const rateLimit = require('express-rate-limit');
 const app = express();
 
 // CORS configuration (must be applied before other middleware)
+const defaultOrigins = [
+  'http://localhost:3000',
+  'http://localhost:5173',
+  'http://localhost:5174',
+  'http://127.0.0.1:3000',
+  'http://127.0.0.1:5173',
+  'http://127.0.0.1:5174'
+];
+const extraOrigins = (process.env.CORS_ORIGINS || '')
+  .split(',')
+  .map(o => o.trim())
+  .filter(Boolean);
+
+// Include common prod domains if not provided via env
+const inferredProdOrigins = [
+  'https://focusbillsadmin.netlify.app'
+];
+
 const corsOptions = {
-  origin: [
-    'http://localhost:3000',
-    'http://localhost:5173',
-    'http://localhost:5174',
-    'http://127.0.0.1:3000',
-    'http://127.0.0.1:5173',
-    'http://127.0.0.1:5174'
-  ],
+  origin: [...new Set([...defaultOrigins, ...inferredProdOrigins, ...extraOrigins])],
   credentials: true,
   optionsSuccessStatus: 200,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
