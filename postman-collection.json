@@ -1,0 +1,408 @@
+{
+  "info": {
+    "name": "Admin Billing API",
+    "description": "Complete API collection for Admin Billing Backend",
+    "version": "1.0.0"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{authToken}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "baseURL",
+      "value": "http://localhost:5000/api",
+      "type": "string"
+    },
+    {
+      "key": "authToken",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Admin Signup",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"admin1\",\n  \"email\": \"admin1@company.com\",\n  \"password\": \"Admin@123\",\n  \"role\": \"admin\"\n}"
+            },
+            "url": {
+              "raw": "{{baseURL}}/auth/signup",
+              "host": [
+                "{{baseURL}}"
+              ],
+              "path": [
+                "auth",
+                "signup"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Admin Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set('authToken', response.data.token);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@company.com\",\n  \"password\": \"Admin@123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseURL}}/auth/login",
+              "host": [
+                "{{baseURL}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Profile",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseURL}}/auth/profile",
+              "host": [
+                "{{baseURL}}"
+              ],
+              "path": [
+                "auth",
+                "profile"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Contact Messages",
+      "item": [
+        {
+          "name": "Create Contact (Public)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"john@example.com\",\n  \"phone\": \"9876543210\",\n  \"subject\": \"Need help with billing\",\n  \"message\": \"I need assistance with understanding my billing process.\"\n}"
+            },
+            "url": {
+              "raw": "{{baseURL}}/contact",
+              "host": [
+                "{{baseURL}}"
+              ],
+              "path": [
+                "contact"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get All Contacts",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseURL}}/contact?page=1&limit=10&status=new",
+              "host": [
+                "{{baseURL}}"
+              ],
+              "path": [
+                "contact"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                },
+                {
+                  "key": "status",
+                  "value": "new"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Contact Status",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"in_progress\",\n  \"priority\": \"high\",\n  \"customerResponse\": \"satisfied\"\n}"
+            },
+            "url": {
+              "raw": "{{baseURL}}/contact/:contactId",
+              "host": [
+                "{{baseURL}}"
+              ],
+              "path": [
+                "contact",
+                ":contactId"
+              ],
+              "variable": [
+                {
+                  "key": "contactId",
+                  "value": ""
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Add Admin Note",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"note\": \"Customer called and provided additional information.\"\n}"
+            },
+            "url": {
+              "raw": "{{baseURL}}/contact/:contactId/notes",
+              "host": [
+                "{{baseURL}}"
+              ],
+              "path": [
+                "contact",
+                ":contactId",
+                "notes"
+              ],
+              "variable": [
+                {
+                  "key": "contactId",
+                  "value": ""
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Demo Requests",
+      "item": [
+        {
+          "name": "Create Demo Request (Public)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Jane Smith\",\n  \"business\": \"Smith Retail Store\",\n  \"phone\": \"9876543210\",\n  \"email\": \"jane@smithstore.com\",\n  \"businessType\": \"retail-store\",\n  \"currentSoftware\": \"excel\",\n  \"preferredTime\": \"2:00 PM\"\n}"
+            },
+            "url": {
+              "raw": "{{baseURL}}/demo",
+              "host": [
+                "{{baseURL}}"
+              ],
+              "path": [
+                "demo"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get All Demos",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseURL}}/demo?page=1&limit=10&status=pending",
+              "host": [
+                "{{baseURL}}"
+              ],
+              "path": [
+                "demo"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                },
+                {
+                  "key": "status",
+                  "value": "pending"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Demo Status",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"demo_scheduled\",\n  \"demoDate\": \"2025-08-15T10:00:00.000Z\",\n  \"demoNotes\": \"Demo scheduled for product walkthrough\"\n}"
+            },
+            "url": {
+              "raw": "{{baseURL}}/demo/:demoId",
+              "host": [
+                "{{baseURL}}"
+              ],
+              "path": [
+                "demo",
+                ":demoId"
+              ],
+              "variable": [
+                {
+                  "key": "demoId",
+                  "value": ""
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Demo Analytics",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseURL}}/demo/analytics",
+              "host": [
+                "{{baseURL}}"
+              ],
+              "path": [
+                "demo",
+                "analytics"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Admin Dashboard",
+      "item": [
+        {
+          "name": "Get Dashboard Data",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseURL}}/admin/dashboard",
+              "host": [
+                "{{baseURL}}"
+              ],
+              "path": [
+                "admin",
+                "dashboard"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get System Stats",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseURL}}/admin/system-stats",
+              "host": [
+                "{{baseURL}}"
+              ],
+              "path": [
+                "admin",
+                "system-stats"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get All Admins (Super Admin)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseURL}}/admin/admins",
+              "host": [
+                "{{baseURL}}"
+              ],
+              "path": [
+                "admin",
+                "admins"
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
